@@ -1,0 +1,43 @@
+# Welcome to your prefect.yaml file! You can use this file for
+# storing and managing configuration for deploying your flows.
+# We recommend committing this file to source control along
+# with your flow code.
+
+# Generic metadata about this project
+name: swiss-energy-analytics
+prefect-version: 3.7.6
+
+# build section allows you to manage and build docker images
+build:
+
+# push section allows you to manage if and how this project
+# is uploaded to remote locations
+push:
+
+# pull section allows you to provide instructions for cloning
+# this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/m-sachkov/swiss-energy-analytics.git
+    branch: main
+- prefect.deployments.steps.run_shell_script:
+      script: pip install pandas pyarrow requests google-cloud-storage prefect-gcp
+
+# the deployments section allows you to provide configuration
+# for deploying flows
+deployments:
+- name: swiss-energy-pipeline
+  version:
+  tags: []
+  concurrency_limit:
+  description: Main pipeline to fetch datasets and upload to GCS
+  entrypoint: flows/web_to_gcp.py:main_pipeline
+  parameters: {}
+  work_pool:
+    name: Swiss Energetic
+    work_queue_name:
+    job_variables: {}
+  schedules:
+  - cron: '*/2 * * * *'
+    timezone:
+    day_or: true

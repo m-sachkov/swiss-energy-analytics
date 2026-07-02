@@ -1,0 +1,6 @@
+version: 2
+
+sources:
+  -name: electricity_generation
+  description: "Electricity generation data from energiedashboard.ch"
+  
