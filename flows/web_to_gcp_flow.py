@@ -7,9 +7,7 @@ from google.cloud import storage
 import requests
 from prefect.blocks.system import Secret
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 GCS_BUCKET_NAME = "swiss_energy"
-GCS_CREDENTIALS_PATH = f"{BASE_DIR}/gcs_key.json"
     
     
 @task(retries=3)
@@ -46,8 +44,8 @@ def transfort_dataframe_to_parquet(df: pd.DataFrame) -> bytes:
     df.to_parquet(parquet_buffer, index=False)
     return parquet_buffer.getvalue()
 
-@flow(name="main_pipeline")
-def main_pipeline():
+@flow(name="web_to_gcs_pipeline")
+def web_to_gcs_pipeline():
     """Main pipeline to fetch datasets and upload to GCS"""
     
     dataset_metadata = {
@@ -61,4 +59,4 @@ def main_pipeline():
         upload_dtaset_to_gcs(transfort_dataframe_to_parquet(df), filename)
 
 if __name__ == "__main__":    
-    main_pipeline()
+    web_to_gcs_pipeline()

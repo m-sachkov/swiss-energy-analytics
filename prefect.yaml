@@ -18,10 +18,14 @@ push:
 # this project in remote locations
 pull:
 - prefect.deployments.steps.git_clone:
+    id: clone
     repository: https://github.com/m-sachkov/swiss-energy-analytics.git
     branch: main
 - prefect.deployments.steps.run_shell_script:
-      script: pip install pandas pyarrow requests google-cloud-storage prefect-gcp
+      directory: "{{ clone.directory }}"
+      script: |
+        pip install uv
+        uv pip install --system -r pyproject.toml
 
 # the deployments section allows you to provide configuration
 # for deploying flows
@@ -31,7 +35,7 @@ deployments:
   tags: []
   concurrency_limit:
   description: Main pipeline to fetch datasets and upload to GCS
-  entrypoint: flows/web_to_gcp.py:main_pipeline
+  entrypoint: flows/main_flow.py:main_pipeline
   parameters: {}
   work_pool:
     name: Swiss Energetic
