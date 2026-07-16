@@ -1,0 +1,1 @@
+select * from {{ source('electricity_data_raw', 'electricity_data') }}
