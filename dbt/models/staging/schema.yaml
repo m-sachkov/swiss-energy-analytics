@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  -name: electricity_data_raw
+  -database: kestra-test-499213
+  -schema: swiss_energy_analytics
+  -tables:
+    - name: electricity_data
+    - description: "Raw electricity data from energiedashboard.ch"
+  
